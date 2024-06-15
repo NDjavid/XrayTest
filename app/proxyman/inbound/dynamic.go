@@ -110,6 +110,12 @@ func (h *DynamicInboundHandler) refresh() error {
 
 	timeout := time.Minute * time.Duration(h.receiverConfig.AllocationStrategy.GetRefreshValue()) * 2
 	concurrency := h.receiverConfig.AllocationStrategy.GetConcurrencyValue()
+
+	// New condition to check if concurrency is greater than 1
+	if concurrency > 1 {
+		return errors.New("concurrency limit exceeded")
+	}
+
 	workers := make([]worker, 0, concurrency)
 
 	address := h.receiverConfig.Listen.AsAddress()
